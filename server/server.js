@@ -315,7 +315,10 @@ const uploadImage = (req, res, next) => {
   const uniqueFileName = Date.now() + "-" + path.basename(decodedFileName);
   uploadFile.mv(`${__dirname}/uploads/${uniqueFileName}`, function (err) {
     if (err)
-      return res.json({ status: "error", message: "Failed to add new blog" });
+      return res.json({
+        status: "error",
+        message: "Failed to add new blog w image",
+      });
 
     req.imageUrl = `${uniqueFileName}`;
     next();
