@@ -4,12 +4,19 @@ const cors = require("cors");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
+const fileUpload = require("express-fileupload");
+const path = require("path");
 require("dotenv").config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+app.use(
+  fileUpload({
+    uriDecodeFileNames: true,
+  })
+);
 
 const port = process.env.PORT || 3307;
 
@@ -128,7 +135,7 @@ app.post("/register", (req, res) => {
 
 // get all questions
 app.get("/questions", (req, res) => {
-  const sql = "SELECT * FROM questions";
+  const sql = "SELECT * FROM questions ORDER BY created_at";
   db.query(sql, (err, data) => {
     if (err)
       return res.json({
@@ -179,7 +186,7 @@ app.get("/question/:id", getQuestion, (req, res) => {
     });
   }
   const sqlAnswers =
-    "SELECT answers.id AS id_answer, answers.id_user AS authAnswer, answers.body AS answer, answers.created_at AS answer_date FROM questions JOIN answers ON questions.id = answers.id_question WHERE questions.id = ?";
+    "SELECT answers.id AS id_answer, answers.id_user AS authAnswer, answers.body AS answer, answers.created_at AS answer_date FROM questions JOIN answers ON questions.id = answers.id_question WHERE questions.id = ? ORDER BY answer_date DESC";
 
   db.query(sqlAnswers, [req.params.id], (err, queryAnswers) => {
     if (err) {
@@ -223,7 +230,6 @@ app.post("/questions", verifyUser, (req, res) => {
   const sql =
     "INSERT INTO questions (`id_user`, `title`, `is_answer`) VALUES (?)";
   const values = [req.username, req.body.title, "false"];
-  console.log(req.body.title);
   db.query(sql, [values], (err, data) => {
     if (err) {
       console.log(err);
@@ -260,7 +266,7 @@ app.post("/questions/answer", verifyUser, (req, res) => {
 
 // get all blogs
 app.get("/blogs", (req, res) => {
-  const sql = "SELECT * FROM blogs";
+  const sql = "SELECT * FROM blogs ORDER BY created_at DESC";
   db.query(sql, (err, data) => {
     if (err)
       return res.json({
@@ -302,11 +308,27 @@ app.get("/blogs/:id", (req, res) => {
   });
 });
 
+const uploadImage = (req, res, next) => {
+  let uploadFile = req.files.file;
+  const fileName = req.files.file.name;
+  const decodedFileName = decodeURIComponent(fileName);
+  const uniqueFileName = Date.now() + "-" + path.basename(decodedFileName);
+  uploadFile.mv(`${__dirname}/uploads/${uniqueFileName}`, function (err) {
+    if (err)
+      return res.json({ status: "error", message: "Failed to add new blog" });
+
+    req.imageUrl = `${uniqueFileName}`;
+    next();
+  });
+};
+
+app.use("/images", express.static(path.join(__dirname, "uploads")));
+
 // add new blog
-app.post("/blogs", verifyUser, (req, res) => {
+app.post("/blogs", verifyUser, uploadImage, (req, res) => {
   const sql =
     "INSERT INTO blogs (`id_user`, `image_blog`, `title`, `body`) VALUES (?)";
-  values = [req.username, "image.jpg", req.body.title, req.body.body];
+  values = [req.username, req.imageUrl, req.body.title, req.body.body];
   db.query(sql, [values], (err, data) => {
     if (err)
       return res.json({
