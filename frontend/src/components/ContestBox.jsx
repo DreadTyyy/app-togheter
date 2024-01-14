@@ -42,7 +42,7 @@ const ContestBox = ({
         <div className="flex justify-between items-center">
           <div className="flex gap-4 items-center">
             <img
-              src="../../public/profile/valak.jfif"
+              src="/profile/valak.jfif"
               alt="profil img"
               className="w-4 h-4 rounded-full"
             />

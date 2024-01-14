@@ -86,7 +86,7 @@ const QuestionDetailPage = ({ authUser }) => {
             <h1 className="font-bold text-xl">{question.title}</h1>
             <div className="flex gap-4 items-center mt-4">
               <img
-                src="../../public/profile/valak.jfif"
+                src="/profile/valak.jfif"
                 alt="profil"
                 className="w-8 h-8 rounded-full object-cover"
               />

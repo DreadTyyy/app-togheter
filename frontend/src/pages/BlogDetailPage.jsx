@@ -33,7 +33,7 @@ const BlogDetailPage = () => {
       <h1 className="text-2xl font-bold mb-4">{blog.title}</h1>
       <div className="flex items-center gap-4">
         <img
-          src="../../public/profile/valak.jfif"
+          src="/profile/valak.jfif"
           alt="profil image"
           className="w-6 h-6 rounded-full"
         />

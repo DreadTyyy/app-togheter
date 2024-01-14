@@ -7,7 +7,7 @@ const AnsweredBox = ({ authAnswer, answer_date, answer }) => {
     <div className="my-4 border border-gray-400 p-4 rounded-md shadow-md">
       <div className="head flex items-center gap-4 ">
         <img
-          src="../../public/profile/valak.jfif"
+          src="/profile/valak.jfif"
           alt="profil image"
           className="w-8 h-8 rounded-full object-cover"
         />

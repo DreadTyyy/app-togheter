@@ -20,7 +20,7 @@ const SubmitedBox = ({ index, submit_image, submit_title, user_submit }) => {
       <h3 className="text-md font-semibold mt-2 px-2">{submit_title}</h3>
       <div className="flex gap-2 items-center px-2 pb-2">
         <img
-          src="../../public/profile/valak.jfif"
+          src="/profile/valak.jfif"
           alt="profil img"
           className="w-4 h-4 rounded-full"
         />
@@ -68,7 +68,7 @@ const ContestDetailPage = () => {
       </div>
       <div className="flex gap-4 items-center">
         <img
-          src="../../public/profile/valak.jfif"
+          src="/profile/valak.jfif"
           alt="profil img"
           className="w-6 h-6 rounded-full"
         />
