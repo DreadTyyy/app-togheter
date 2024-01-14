@@ -9,7 +9,7 @@ const QuestionBox = ({ id, id_user, title, created_at, is_answer }) => {
     <article className="border border-gray-400 p-4 rounded-md shadow-md ">
       <div className="head flex justify-between items-center gap-4 mb-4">
         <img
-          src="../../public/profile/valak.jfif"
+          src="/profile/valak.jfif"
           alt="profil image"
           className="w-8 h-8 rounded-full object-cover"
         />
