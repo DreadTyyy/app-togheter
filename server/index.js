@@ -9,7 +9,13 @@ const path = require("path");
 require("dotenv").config();
 
 const app = express();
-app.use(cors({ origin: "https://app-togheter-lac.vercel.app/" }));
+app.use(
+  cors({
+    origin: "https://app-togheter-lac.vercel.app/",
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 app.use(
