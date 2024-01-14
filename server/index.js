@@ -466,9 +466,9 @@ app.get("/users", (req, res) => {
   });
 });
 
-app.get("/", () => {
+app.get("/", (res) => {
   console.log("listening /");
-  res.send('Hey this is my API running 🥳')
+  res.send("Hey this is my API running 🥳");
 });
 
 app.listen(port, () => {
