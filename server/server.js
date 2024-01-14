@@ -9,7 +9,7 @@ const path = require("path");
 require("dotenv").config();
 
 const app = express();
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(
@@ -135,7 +135,7 @@ app.post("/register", (req, res) => {
 
 // get all questions
 app.get("/questions", (req, res) => {
-  const sql = "SELECT * FROM questions ORDER BY created_at";
+  const sql = "SELECT * FROM questions ORDER BY created_at DESC";
   db.query(sql, (err, data) => {
     if (err)
       return res.json({
@@ -186,7 +186,7 @@ app.get("/question/:id", getQuestion, (req, res) => {
     });
   }
   const sqlAnswers =
-    "SELECT answers.id AS id_answer, answers.id_user AS authAnswer, answers.body AS answer, answers.created_at AS answer_date FROM questions JOIN answers ON questions.id = answers.id_question WHERE questions.id = ? ORDER BY answer_date DESC";
+    "SELECT answers.id AS id_answer, answers.id_user AS authAnswer, answers.body AS answer, answers.created_at AS answer_date FROM questions JOIN answers ON questions.id = answers.id_question WHERE questions.id = ?";
 
   db.query(sqlAnswers, [req.params.id], (err, queryAnswers) => {
     if (err) {
@@ -350,6 +350,114 @@ app.post("/blogs", verifyUser, uploadImage, (req, res) => {
   });
 });
 
+// get all contest
+app.get("/contests", (req, res) => {
+  const sqlContest = "SELECT * FROM contests ORDER BY created_at DESC";
+  db.query(sqlContest, (err, data) => {
+    if (err)
+      return res.json({
+        status: "error",
+        data: null,
+        message: "Failed to get contests",
+      });
+    if (data.length > 0) {
+      return res.json({
+        status: "success",
+        data: data,
+        message: "Success to get contests",
+      });
+    } else {
+      return res.json({
+        status: "failed",
+        data: [],
+        message: "No contest found.",
+      });
+    }
+  });
+});
+
+// get detail contest
+app.get("/contests/:id", (req, res) => {
+  const sql = "SELECT * FROM contests WHERE `id`=?";
+  db.query(sql, [req.params.id], (err, data) => {
+    if (err)
+      return res.json({
+        status: "error",
+        data: null,
+        message: "Failed to get contest",
+      });
+    if (data.length > 0) {
+      const querySubmit =
+        "SELECT contests.id AS id_contest,submited.id AS id_submit, submited.id_user AS user_submit, submited.title AS submit_title, submited.description AS submit_description, submited.image AS submit_image, submited.created_at AS submit_date FROM contests JOIN submited ON contests.id = submited.id_contest WHERE contests.id=? ORDER BY submited.created_at DESC";
+      if (data[0].submited > 0) {
+        db.query(querySubmit, [req.params.id], (err, submitData) => {
+          if (err)
+            return res.json({
+              status: "error",
+              data: null,
+              message: "Failed to get submit data",
+            });
+          return res.json({
+            status: "success",
+            message: "Success to get contest and submited",
+            data: { data, item_submit: submitData },
+          });
+        });
+      } else {
+        return res.json({
+          status: "success",
+          message: "Success to get contest",
+          data: { data, item_submit: [] },
+        });
+      }
+    } else {
+      return res.json({
+        status: "failed",
+        message: "Contest is not found",
+        data: [],
+      });
+    }
+  });
+});
+
+// send submit
+app.post("/contests", verifyUser, uploadImage, (req, res) => {
+  const sql =
+    "INSERT INTO submited (`id_contest`,`id_user`,`title`,`description`,`image`) VALUES (?)";
+  const values = [
+    req.body.id_contest,
+    req.username,
+    req.body.title,
+    req.body.description,
+    req.imageUrl,
+  ];
+  db.query(sql, [values], (err, data) => {
+    if (err) {
+      return res.json({
+        status: "error",
+        message: "Failed to submit",
+        data: null,
+      });
+    }
+    const updateSubmit =
+      "UPDATE contests SET `submited`=`submited`+1 WHERE id=?";
+    db.query(updateSubmit, [req.body.id_contest], (err, data) => {
+      if (err) {
+        return res.json({
+          status: "error",
+          message: "Failed to modified contest",
+          data: null,
+        });
+      }
+      return res.json({
+        status: "success",
+        message: "Submited success",
+        data: data,
+      });
+    });
+  });
+});
+
 app.get("/users", (req, res) => {
   const sql = "SELECT * FROM users";
   db.query(sql, (err, data) => {
@@ -360,6 +468,7 @@ app.get("/users", (req, res) => {
 
 app.get("/", () => {
   console.log("listening /");
+  res.send('Hey this is my API running 🥳')
 });
 
 app.listen(port, () => {
