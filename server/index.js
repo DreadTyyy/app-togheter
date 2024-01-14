@@ -11,7 +11,7 @@ require("dotenv").config();
 const app = express();
 app.use(
   cors({
-    origin: "https://app-togheter-lac.vercel.app/",
+    origin: "https://app-togheter-lac.vercel.app",
     methods: "GET,POST,PUT,DELETE",
     credentials: true,
   })
