@@ -9,6 +9,8 @@ const BlogDetailPage = () => {
   const [blog, setBlog] = useState(null);
   const [initialized, setInitialized] = useState(false);
 
+  const pathImage = import.meta.env.VITE_APP_BASEURL;
+
   useEffect(() => {
     const fetchBlog = async () => {
       const { error, data } = await getDetailBlog({ id });
@@ -30,7 +32,11 @@ const BlogDetailPage = () => {
     <section className="mt-12 md:mx-[10%] md:w-[70%] w-full">
       <h1 className="text-2xl font-bold mb-4">{blog.title}</h1>
       <div className="flex items-center gap-4">
-        <img src="x" alt="profil image" className="w-6 h-6 rounded-full" />
+        <img
+          src="../../public/profile/valak.jfif"
+          alt="profil image"
+          className="w-6 h-6 rounded-full"
+        />
         <div>
           <h2 className="text-md font-medium">{blog.id_user}</h2>
           <h3 className="text-sm text-gray-500">
@@ -40,9 +46,9 @@ const BlogDetailPage = () => {
       </div>
       <article className="my-4">
         <img
-          src={`${blog.image_blog}`}
+          src={`${pathImage}/images/${blog.image_blog}`}
           alt="image blog"
-          className="mb-6 w-full h-[480px] max-h-[480px] rounded-lg bg-gray-700"
+          className="mb-6 w-full aspect-square max-h-[480px] rounded-lg bg-gray-700 border border-gray-300"
         />
         <hr />
         <p className="my-8 md:text-lg">{blog.body}</p>

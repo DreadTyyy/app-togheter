@@ -1,11 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ContestBox from "../components/ContestBox";
-import { getAllContest } from "../utils/data";
+import { getContests } from "../utils/network-data";
 
 const ContestPage = () => {
-  const [contests, setContests] = useState(() => {
-    return getAllContest() || null;
-  });
+  const [contests, setContests] = useState([]);
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    const fetchContest = async () => {
+      const { data, error } = await getContests();
+      if (!error) {
+        setContests(data);
+        setInitialized(true);
+      }
+    };
+    fetchContest();
+  }, []);
+
+  if (!initialized) {
+    return <div className="md:mx-[10%] my-12">Loading...</div>;
+  }
 
   return (
     <main className="md:mx-[10%]">

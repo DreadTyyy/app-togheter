@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import AnsweredBox from "../components/AnsweredBox";
 import { BiSend } from "react-icons/bi";
 import NotFoundItem from "../components/NotFoundItem";
@@ -29,7 +29,6 @@ const SideBar = ({ onAnswer, onSend, authUser }) => {
 
 const QuestionDetailPage = ({ authUser }) => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [myAnswer, setMyAnswer] = useState("");
   const [question, setQuestion] = useState(null);
   const [answers, setAnswers] = useState(null);
@@ -45,7 +44,7 @@ const QuestionDetailPage = ({ authUser }) => {
       setInitialized(true);
     };
     fetchQuestion();
-  }, []);
+  }, [answers]);
 
   const onAnswerHandlerChanges = (event) => {
     setMyAnswer(event.target.innerHTML);
@@ -61,7 +60,13 @@ const QuestionDetailPage = ({ authUser }) => {
         body: myAnswer,
       });
       if (!error) {
-        window.location.reload();
+        const fetchAnswers = async () => {
+          const { error, data } = await getDetailQuestion(id);
+          if (!error) {
+            setAnswers(data.answers);
+          }
+        };
+        fetchAnswers();
       }
     };
     sendAnswer();
@@ -75,12 +80,16 @@ const QuestionDetailPage = ({ authUser }) => {
   }
   return (
     <>
-      <section className="mt-12 md:mx-[10%] flex gap-4 ">
+      <section className="mt-12 md:mx-[10%] flex gap-4 md:flex-row flex-col">
         <main className="max-w-[60%] min-w-[450px] w-[640px]">
           <div className="border border-gray-400 p-4 rounded-md shadow-md">
             <h1 className="font-bold text-xl">{question.title}</h1>
             <div className="flex gap-4 items-center mt-4">
-              <img src="x" alt="profil" className="w-8 h-8 rounded-full" />
+              <img
+                src="../../public/profile/valak.jfif"
+                alt="profil"
+                className="w-8 h-8 rounded-full object-cover"
+              />
               <h2 className="font-semibold text-md underline text-primary mr-auto">
                 {question.author}
               </h2>
@@ -102,13 +111,20 @@ const QuestionDetailPage = ({ authUser }) => {
             )}
           </article>
         </main>
-        {window.innerWidth > 600 && authUser !== null && (
+        {window.innerWidth > 600 && authUser !== null ? (
           <SideBar
             authUser={authUser}
             body={myAnswer}
             onAnswer={onAnswerHandlerChanges}
             onSend={onSendHandler}
           />
+        ) : (
+          <section className="border h-fit w-fit border-gray-400 p-4 rounded-md shadow-md">
+            <p className="text-red-500">
+              Silahkan login untuk dapat menjawab pertanyaan atau buka di mode
+              desktop
+            </p>
+          </section>
         )}
       </section>
     </>

@@ -1,5 +1,3 @@
-import { json } from "react-router-dom";
-
 const BASE_URL = import.meta.env.VITE_APP_BASEURL;
 
 const putAccessToken = (token) => {
@@ -120,13 +118,11 @@ const getBlogs = async () => {
   return { error: false, data: responseJson.data };
 };
 
-const addBlog = async ({ title, body }) => {
+const addBlog = async (formData) => {
   const response = await fetchWithToken(`${BASE_URL}/blogs`, {
     method: "POST",
-    headers: {
-      "Content-Type": "Application/Json",
-    },
-    body: JSON.stringify({ title, body }),
+    mode: "cors",
+    body: formData,
   });
   const responseJson = await response.json();
   if (responseJson.status !== "success") {
@@ -144,6 +140,36 @@ const getDetailBlog = async ({ id }) => {
   return { error: false, data: responseJson.data };
 };
 
+const getContests = async () => {
+  const response = await fetch(`${BASE_URL}/contests`);
+  const responseJson = await response.json();
+  if (responseJson.status !== "success") {
+    return { error: true, data: [] };
+  }
+  return { error: false, data: responseJson.data };
+};
+
+const getDetailContest = async (id) => {
+  const response = await fetch(`${BASE_URL}/contests/${id}`);
+  const responseJson = await response.json();
+  if (responseJson.status !== "success") {
+    return { error: true, data: [] };
+  }
+  return { error: false, data: responseJson.data };
+};
+
+const sendSubmit = async (formData) => {
+  const response = await fetchWithToken(`${BASE_URL}/contests`, {
+    method: "POST",
+    body: formData,
+  });
+  const responseJson = await response.json();
+  if (responseJson.status !== "success") {
+    return { error: true, message: responseJson.message };
+  }
+  return { error: false, message: responseJson.message };
+};
+
 export {
   getAccessToken,
   putAccessToken,
@@ -157,4 +183,7 @@ export {
   getBlogs,
   getDetailBlog,
   addBlog,
+  getContests,
+  getDetailContest,
+  sendSubmit,
 };

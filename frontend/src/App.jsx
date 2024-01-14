@@ -13,6 +13,7 @@ import AddQuestionPage from "./pages/AddQuestionPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import { getUserLogged, putAccessToken } from "./utils/network-data";
+import SubmitPage from "./pages/SubmitPage";
 
 const App = () => {
   const navigate = useNavigate();
@@ -69,8 +70,15 @@ const App = () => {
         />
         <Route path="/blog/:id" element={<BlogDetailPage />} />
         <Route path="/contest/:id" element={<ContestDetailPage />} />
-        <Route path="/blogs/add" element={<AddBlogPage />} />
-        <Route path="/questions/add" element={<AddQuestionPage />} />
+        <Route
+          path="/blogs/add"
+          element={<AddBlogPage authUser={authUser} />}
+        />
+        <Route
+          path="/questions/add"
+          element={<AddQuestionPage authUser={authUser} />}
+        />
+        <Route path="/contest/:id/submit" element={<SubmitPage />} />
       </Routes>
     </div>
   );

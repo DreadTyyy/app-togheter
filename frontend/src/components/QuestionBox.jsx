@@ -2,15 +2,16 @@ import React from "react";
 import { PiNotePencilBold } from "react-icons/pi";
 import { Link } from "react-router-dom";
 import { getFormattedDate } from "../utils/formattedDate";
+import PropTypes from "prop-types";
 
 const QuestionBox = ({ id, id_user, title, created_at, is_answer }) => {
   return (
     <article className="border border-gray-400 p-4 rounded-md shadow-md ">
       <div className="head flex justify-between items-center gap-4 mb-4">
         <img
-          src="https://picsum.photos/"
+          src="../../public/profile/valak.jfif"
           alt="profil image"
-          className="w-8 h-8 rounded-full"
+          className="w-8 h-8 rounded-full object-cover"
         />
         <div className="mr-auto text-sm">
           <h2 className="loose-normal font-semibold">{id_user}</h2>
@@ -38,3 +39,11 @@ const QuestionBox = ({ id, id_user, title, created_at, is_answer }) => {
 };
 
 export default QuestionBox;
+
+QuestionBox.propTypes = {
+  id: PropTypes.number.isRequired,
+  id_user: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  created_at: PropTypes.string.isRequired,
+  is_answer: PropTypes.string.isRequired,
+};

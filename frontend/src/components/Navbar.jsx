@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const Navbar = ({ isLogin, onLogout }) => {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
   const navigateTo = (url) => {
     navigate(url);
@@ -18,6 +20,10 @@ const Navbar = ({ isLogin, onLogout }) => {
     }
   };
 
+  const onHamburgerHandler = () => {
+    setOpen(!open);
+  };
+
   const onPostHandler = () => {
     if (isLogin === "Login") {
       alert("Anda harus LOGIN terlebih dahulu untuk dapat memposting!");
@@ -27,11 +33,22 @@ const Navbar = ({ isLogin, onLogout }) => {
     }
   };
   return (
-    <nav className="flex justify-between pb-2 border-b border-gray-300">
+    <nav className="flex md:justify-between items-center gap-6 pb-2 border-b border-gray-300">
       <Link to={"/"} className="text-2xl font-bold">
         TO<span className="text-primary">GHETER.</span>
       </Link>
-      <div className="md:relative absolute  flex md:flex-row flex-col gap-4 items-center font-medium">
+      <div
+        className="md:hidden order-1 flex flex-col gap-2"
+        onClick={() => onHamburgerHandler()}>
+        <span className="block w-8 h-[3px] bg-black"></span>
+        <span className="block w-8 h-[3px] bg-black"></span>
+        <span className="block w-8 h-[3px] bg-black"></span>
+      </div>
+      <div
+        id="item-nav"
+        className={`md:relative md:py-0 py-4 absolute ${
+          open ? "top-[10%]" : "-top-[100%]"
+        } right-0 bg-white md:w-fit w-full flex md:flex-row flex-col gap-4 items-center font-medium transition-all duration-500 md:border-none border-b`}>
         <Link to={"/"} className="hover:underline hover:text-primary">
           Home
         </Link>
@@ -45,9 +62,11 @@ const Navbar = ({ isLogin, onLogout }) => {
           Kontes
         </Link>
       </div>
-      <div>
+
+      {/* button posting */}
+      <div className="md:ml-0 ml-auto flex">
         <button
-          className="rounded-full px-6 py-2 border border-primary hover:text-white hover:bg-primary text-md text-primary font-semibold mr-4 transition-all"
+          className="md:block hidden rounded-full px-6 py-2 border border-primary hover:text-white hover:bg-primary text-md text-primary font-semibold mr-4 transition-all"
           onClick={onPostHandler}>
           Posting sesuatu
         </button>
@@ -94,3 +113,8 @@ const Navbar = ({ isLogin, onLogout }) => {
 };
 
 export default Navbar;
+
+Navbar.propTypes = {
+  isLogin: PropTypes.string.isRequired,
+  onLogout: PropTypes.func.isRequired,
+};

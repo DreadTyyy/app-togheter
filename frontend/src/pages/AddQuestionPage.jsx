@@ -1,9 +1,18 @@
 import React, { useEffect } from "react";
 import useInput from "../hooks/useInput";
 import { addQuestion } from "../utils/network-data";
+import { useNavigate } from "react-router-dom";
 
-const AddQuestionPage = () => {
+const AddQuestionPage = ({ authUser }) => {
   const [question, onQuestionHandlerChanges] = useInput("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (authUser === null) {
+      alert("Silahkan login terlebih dahulu untuk menambahkan pertanyaan");
+      navigate("/question");
+    }
+  }, []);
 
   const onSubmitHandler = (e) => {
     e.preventDefault();

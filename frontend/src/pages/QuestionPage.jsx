@@ -36,8 +36,10 @@ const QuestionPage = () => {
         <p className="text-lg">Filter: </p>
       </div>
       <section className="flex flex-col gap-4 mt-4 md:max-w-[80%]">
-        {questions.map((question) => {
-          return <QuestionBox key={question.id} {...question} />;
+        {questions.map((question, index) => {
+          if (index < 3) {
+            return <QuestionBox key={question.id} {...question} />;
+          }
         })}
       </section>
     </main>
