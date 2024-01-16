@@ -35,7 +35,7 @@ const Navbar = ({ isLogin, onLogout }) => {
   return (
     <nav className="flex md:justify-between items-center gap-6 pb-2 border-b border-gray-300">
       <Link to={"/"} className="text-2xl font-bold">
-        TO<span className="text-primary">GHETER.</span>
+        TO<span className="text-primary">GETHER.</span>
       </Link>
       <div
         className="md:hidden order-1 flex flex-col gap-2"

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import NotFoundItem from "../components/NotFoundItem";
 import { getDetailContest } from "../utils/network-data";
 import { getImageBlob } from "../utils/formattedImage";
+import PropTypes from "prop-types";
 
 const SubmitedBox = ({ index, submit_image, submit_title, user_submit }) => {
   const [imageUrl, setImageUrl] = useState("");
@@ -111,3 +112,10 @@ const ContestDetailPage = () => {
 };
 
 export default ContestDetailPage;
+
+SubmitedBox.propTypes = {
+  index: PropTypes.number,
+  submit_image: PropTypes.string.isRequired,
+  submit_title: PropTypes.string.isRequired,
+  user_submit: PropTypes.string.isRequired,
+};
