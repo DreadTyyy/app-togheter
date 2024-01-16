@@ -7,11 +7,13 @@ const jwt = require("jsonwebtoken");
 const fileUpload = require("express-fileupload");
 const path = require("path");
 require("dotenv").config();
+const { put } = require("@vercel/blob");
+const { list } = require("@vercel/blob");
 
 const app = express();
 app.use(
   cors({
-    origin: "https://app-togheter-lac.vercel.app",
+    origin: "*",
     methods: "GET,POST,PUT,DELETE",
     credentials: true,
   })
@@ -60,6 +62,63 @@ const verifyUser = (req, res, next) => {
   }
 };
 
+// vercel blob
+// upload to blob databases
+const uploadBlob = async (req, res, next) => {
+  const form = await req.files;
+  const formFile = form["file"];
+  const type = formFile.mimetype.split("/")[1];
+
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let filename = "";
+  for (let i = 0; i < 10; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    filename += characters.charAt(randomIndex);
+  }
+  filename = filename + "." + type;
+
+  const buffer = new Blob([formFile.data], { type: formFile.mimetype });
+
+  const blob = await put(filename, buffer, {
+    access: "public",
+  });
+
+  req.imageUrl = blob.url;
+  next();
+};
+
+// download image from blob databases
+app.get("/api/download", async (req, res) => {
+  const { blobs } = await list();
+  return res.json(blobs);
+});
+
+// upload to local directory
+const uploadImage = (req, res, next) => {
+  let uploadFile = req.files.file;
+  const fileName = req.files.file.name;
+  const decodedFileName = decodeURIComponent(fileName);
+  const uniqueFileName = Date.now() + "-" + path.basename(decodedFileName);
+  uploadFile.mv(`${__dirname}/uploads/${uniqueFileName}`, function (err) {
+    if (err) {
+      res.status(500).send(err);
+      return res.json({
+        error: err,
+        status: "error",
+        message: "Failed to add new blog w image",
+      });
+    }
+
+    req.imageUrl = `${uniqueFileName}`;
+    next();
+  });
+};
+
+app.post("/api/upload", uploadBlob, (req, res) => {
+  return res.status(500).send("Sudah bisa");
+});
+
 app.get("/users/me", verifyUser, (req, res) => {
   return res.json({ status: "success", username: req.username });
 });
@@ -74,7 +133,10 @@ app.post("/login", (req, res) => {
         req.body.password.toString(),
         data[0].password,
         (err, response) => {
-          if (err) return res.json({ status: "error", message: err });
+          if (err) {
+            console.log(err);
+            return res.json({ status: "error", message: "Login failed" });
+          }
           if (response) {
             const username = data[0].username;
             const token = jwt.sign({ username }, "jwt-secret-key", {
@@ -314,30 +376,10 @@ app.get("/blogs/:id", (req, res) => {
   });
 });
 
-const uploadImage = (req, res, next) => {
-  let uploadFile = req.files.file;
-  const fileName = req.files.file.name;
-  const decodedFileName = decodeURIComponent(fileName);
-  const uniqueFileName = Date.now() + "-" + path.basename(decodedFileName);
-  uploadFile.mv(`${__dirname}/uploads/${uniqueFileName}`, function (err) {
-    if (err) {
-      res.status(500).send(err);
-      return res.json({
-        error: err,
-        status: "error",
-        message: "Failed to add new blog w image",
-      });
-    }
-
-    req.imageUrl = `${uniqueFileName}`;
-    next();
-  });
-};
-
 app.use("/images", express.static(path.join(__dirname, "uploads")));
 
 // add new blog
-app.post("/blogs", verifyUser, uploadImage, (req, res) => {
+app.post("/blogs", verifyUser, uploadBlob, (req, res) => {
   const sql =
     "INSERT INTO blogs (`id_user`, `image_blog`, `title`, `body`) VALUES (?)";
   values = [req.username, req.imageUrl, req.body.title, req.body.body];
@@ -427,7 +469,7 @@ app.get("/contests/:id", (req, res) => {
 });
 
 // send submit
-app.post("/contests", verifyUser, uploadImage, (req, res) => {
+app.post("/contests", verifyUser, uploadBlob, (req, res) => {
   const sql =
     "INSERT INTO submited (`id_contest`,`id_user`,`title`,`description`,`image`) VALUES (?)";
   const values = [
