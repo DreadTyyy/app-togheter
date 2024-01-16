@@ -3,13 +3,13 @@ import { useParams } from "react-router-dom";
 import NotFoundItem from "../components/NotFoundItem";
 import { getDetailBlog } from "../utils/network-data";
 import { getFormatedDateWithTime } from "../utils/formattedDate";
+import { getImageBlob } from "../utils/formattedImage";
 
 const BlogDetailPage = () => {
   const { id } = useParams();
   const [blog, setBlog] = useState(null);
   const [initialized, setInitialized] = useState(false);
-
-  const pathImage = import.meta.env.VITE_APP_BASEURL;
+  const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
     const fetchBlog = async () => {
@@ -21,6 +21,16 @@ const BlogDetailPage = () => {
     };
     fetchBlog();
   }, []);
+
+  useEffect(() => {
+    if (blog !== null) {
+      const getImage = async () => {
+        const image = await getImageBlob(blog.image_blog);
+        setImageUrl(image);
+      };
+      getImage();
+    }
+  }, [blog]);
 
   if (!initialized) {
     return <div className="md:mx-[10%] my-12">Loading...</div>;
@@ -46,9 +56,9 @@ const BlogDetailPage = () => {
       </div>
       <article className="my-4">
         <img
-          src={`${pathImage}/images/${blog.image_blog}`}
+          src={imageUrl}
           alt="image blog"
-          className="mb-6 w-full aspect-square max-h-[480px] rounded-lg bg-gray-700 border border-gray-300"
+          className="mb-6 w-full object-cover aspect-square max-h-[480px] rounded-lg bg-gray-700 border border-gray-300"
         />
         <hr />
         <p className="my-8 md:text-lg">{blog.body}</p>

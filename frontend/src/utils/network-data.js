@@ -118,12 +118,15 @@ const getBlogs = async () => {
   return { error: false, data: responseJson.data };
 };
 
-const addBlog = async (formData) => {
-  const response = await fetchWithToken(`${BASE_URL}/blogs`, {
-    method: "POST",
-    mode: "cors",
-    body: formData,
-  });
+const addBlog = async (formData, file) => {
+  const response = await fetchWithToken(
+    `${BASE_URL}/blogs?filename=${file.name}`,
+    {
+      method: "POST",
+      mode: "cors",
+      body: formData,
+    }
+  );
   const responseJson = await response.json();
   if (responseJson.status !== "success") {
     return { error: true, message: responseJson.message };
@@ -161,6 +164,7 @@ const getDetailContest = async (id) => {
 const sendSubmit = async (formData) => {
   const response = await fetchWithToken(`${BASE_URL}/contests`, {
     method: "POST",
+    mode: "cors",
     body: formData,
   });
   const responseJson = await response.json();

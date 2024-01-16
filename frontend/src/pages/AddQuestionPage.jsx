@@ -27,7 +27,7 @@ const AddQuestionPage = ({ authUser }) => {
   };
   return (
     <div className="mt-12 md:mx-[10%] md:w-[70%] w-full">
-      <h1 className="text-2xl font-bold mb-8">Tambahkan Blog Baru</h1>
+      <h1 className="text-2xl font-bold mb-8">Tambahkan Pertanyaan Baru</h1>
       <form onSubmit={onSubmitHandler} className="flex flex-col gap-4">
         <div className="border border-gray-400 text-lg p-4 rounded-md shadow-md">
           <label htmlFor="question" className="font-semibold">

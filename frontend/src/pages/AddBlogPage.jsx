@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import useInput from "../hooks/useInput";
 import { addBlog } from "../utils/network-data";
-import checkFormattedImage from "../utils/formattedImage";
+import { checkFormattedImage } from "../utils/formattedImage";
 import { useNavigate } from "react-router-dom";
 
 const AddBlogPage = ({ authUser }) => {
@@ -50,7 +50,7 @@ const AddBlogPage = ({ authUser }) => {
       formData.append("title", title);
       formData.append("body", body);
 
-      const { error, message } = await addBlog(formData);
+      const { error, message } = await addBlog(formData, selectedImage);
       alert(message);
       if (!error) {
         document.getElementById("title").value = "";

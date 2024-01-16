@@ -3,9 +3,17 @@ import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import NotFoundItem from "../components/NotFoundItem";
 import { getDetailContest } from "../utils/network-data";
+import { getImageBlob } from "../utils/formattedImage";
 
 const SubmitedBox = ({ index, submit_image, submit_title, user_submit }) => {
-  const pathImage = import.meta.env.VITE_APP_BASEURL;
+  const [imageUrl, setImageUrl] = useState("");
+  useEffect(() => {
+    async function getImage() {
+      const image = await getImageBlob(submit_image);
+      setImageUrl(image);
+    }
+    getImage();
+  }, []);
 
   return (
     <div className="relative w-full rounded-md border border-gray-400 shadow-md overflow-hidden">
@@ -13,7 +21,7 @@ const SubmitedBox = ({ index, submit_image, submit_title, user_submit }) => {
         #{index}
       </p>
       <img
-        src={`${pathImage}/images/${submit_image}`}
+        src={imageUrl}
         alt={`karya ${user_submit}`}
         className="w-full h-fit object-cover bg-red-500 aspect-square"
       />

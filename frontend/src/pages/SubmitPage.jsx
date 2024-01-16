@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import useInput from "../hooks/useInput";
-import checkFormattedImage from "../utils/formattedImage";
-import { useParams, Link, Navigate, useNavigate } from "react-router-dom";
+import { checkFormattedImage } from "../utils/formattedImage";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import NotFoundItem from "../components/NotFoundItem";
 import { sendSubmit } from "../utils/network-data";
 import { getDetailContest } from "../utils/network-data";

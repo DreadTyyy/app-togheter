@@ -47,7 +47,7 @@ const HomePage = () => {
           <div className="border flex flex-wrap md:grid grid-cols-2 gap-x-2 gap-y-6 border-gray-400 p-4 rounded-md shadow-md">
             {!initialized ? (
               <div className="md:mx-[10%] my-12">Loading...</div>
-            ) : questions.length > 0 ? (
+            ) : blogs.length > 0 ? (
               blogs.map((blog) => {
                 return (
                   <div
@@ -58,7 +58,7 @@ const HomePage = () => {
                 );
               })
             ) : (
-              <NotFoundItem>Pertanyaan</NotFoundItem>
+              <NotFoundItem>Blog</NotFoundItem>
             )}
           </div>
         </section>

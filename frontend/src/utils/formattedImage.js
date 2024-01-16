@@ -14,4 +14,13 @@ function checkFormattedImage(data) {
   return true;
 }
 
-export default checkFormattedImage;
+async function getImageBlob(url) {
+  const image = await fetch(url, {
+    method: "GET",
+  });
+  const blob = await image.blob();
+  const data = URL.createObjectURL(blob);
+  return data;
+}
+
+export { checkFormattedImage, getImageBlob };

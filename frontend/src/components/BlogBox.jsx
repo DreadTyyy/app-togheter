@@ -1,16 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { getFormatedDateWithTime } from "../utils/formattedDate";
+import { getImageBlob } from "../utils/formattedImage";
 
 const BlogBox = ({ id, id_user, image_blog, title, created_at }) => {
-  const pathImage = import.meta.env.VITE_APP_BASEURL;
+  const [imageUrl, setImageUrl] = useState("");
+  useEffect(() => {
+    async function getImages() {
+      const image = await getImageBlob(image_blog);
+      setImageUrl(image);
+    }
+    getImages();
+  });
 
   return (
     <article className="cursor-pointer group">
       <Link to={`/blog/${id}`}>
         <img
-          src={`${pathImage}/images/${image_blog}`}
+          id="cover-blog"
+          src={imageUrl}
           alt="blog image"
           className="w-full min-h-[120px] border rounded-md aspect-[4/3] object-cover object-center"
         />

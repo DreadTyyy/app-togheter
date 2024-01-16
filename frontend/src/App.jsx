@@ -14,6 +14,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import { getUserLogged, putAccessToken } from "./utils/network-data";
 import SubmitPage from "./pages/SubmitPage";
+import UploadPage from "./pages/UploadPage";
 
 const App = () => {
   const navigate = useNavigate();
@@ -52,6 +53,7 @@ const App = () => {
         onLogout={onLogoutHandler}
       />
       <Routes>
+        <Route path="/upload" element={<UploadPage />} />
         <Route
           path="/login"
           element={<LoginPage authUser={authUser} onLogin={onLoginSuccess} />}
